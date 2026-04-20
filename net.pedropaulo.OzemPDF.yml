@@ -28,7 +28,7 @@ modules:
     sources:
       - type: archive
         url: https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10050/ghostscript-10.05.0.tar.gz
-        sha256: "7783c6744780d229cf1e5e6e0e4ff48d5c59ce3e0b0986c9937b4e4e54c8c6b1"
+        sha256: "56e77833de683825c420d0af8cb90aa8ba7da71ea6fb5624290cbc1b53fe7942"
 
   - name: ozempdf
     buildsystem: simple
