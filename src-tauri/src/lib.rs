@@ -360,7 +360,13 @@ mod tests {
 
     #[test]
     fn test_detect_ghostscript_success() {
-        let expected = Command::new("gs").arg("--version").output().unwrap();
+        let expected = match Command::new("gs").arg("--version").output() {
+            Ok(output) => output,
+            Err(_) => {
+                eprintln!("skipping: gs not available on this system");
+                return;
+            }
+        };
 
         assert!(expected.status.success());
 
