@@ -1,0 +1,16 @@
+[Desktop Entry]
+Categories=Office;
+Comment=Compacte arquivos PDF com presets praticos
+Comment[pt_BR]=Compacte arquivos PDF com presets praticos
+Comment[en]=Compress PDF files with practical presets
+Comment[es]=Comprime archivos PDF con ajustes practicos
+Comment[fr]=Compressez des PDF avec des reglages pratiques
+Comment[de]=PDF-Dateien mit praktischen Vorgaben komprimieren
+Comment[it]=Comprimi PDF con preset pratici
+Exec=ozempdf
+Icon=net.pedropaulo.OzemPDF
+Name=OzemPDF
+StartupWMClass=ozempdf
+Terminal=false
+Type=Application
+StartupNotify=true
