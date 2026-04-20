@@ -9,7 +9,7 @@ import type { CompressionFailure, CompressionResponse } from "./compressor";
 import type { CuratedDependencyGroup, OfficialLinks } from "./about";
 
 export class UIManager {
-  // Elementos DOM
+  // DOM elements
   private app: HTMLDivElement;
   private panelEl!: HTMLElement;
   private eyebrowEl!: HTMLParagraphElement;
@@ -57,7 +57,7 @@ export class UIManager {
   constructor(appId: string, logoUrl: string) {
     const app = document.querySelector<HTMLDivElement>(appId);
     if (!app) {
-      throw new Error(`Elemento ${appId} não encontrado.`);
+      throw new Error(`Element ${appId} not found.`);
     }
     this.app = app;
     this.initLayout(logoUrl);
@@ -247,13 +247,13 @@ export class UIManager {
   private queryWithinRoot<T extends Element>(selector: string): T {
     const element = this.app.querySelector<T>(selector);
     if (!element) {
-      throw new Error(`Falha ao mapear o elemento ${selector}.`);
+      throw new Error(`Failed to bind element ${selector}.`);
     }
 
     return element;
   }
 
-  // Métodos de atualização de UI
+  // UI update methods
   public setStatus(message: string, tone: "info" | "error" | "success" | "warning") {
     this.statusEl.textContent = message;
     this.statusEl.className = `status ${tone}`;
@@ -524,7 +524,7 @@ export class UIManager {
     }
   }
 
-  // Getters para eventos
+  // Event getters
   public getThemeSelect() { return this.themeSelect; }
   public getLocaleSelect() { return this.localeSelect; }
   public getAboutButton() { return this.aboutButton; }

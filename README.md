@@ -97,6 +97,23 @@ npm run tauri:appimage
 
 The script in `scripts/build-appimage.sh` rebuilds the frontend, compiles the Tauri binary, prepares Linux metadata, bundles the required WebKit/GTK libraries, and packages the portable AppImage. The generated AppImage still expects Ghostscript to be installed on the target system and may require `libfuse2` on distributions that do not provide compatible FUSE support by default.
 
+## Flatpak
+
+The repository includes a Flatpak manifest at `net.pedropaulo.OzemPDF.yml`. Unlike the AppImage, the Flatpak build bundles Ghostscript as a module, so users do not need to install it separately.
+
+Build locally:
+
+```bash
+sudo apt install flatpak-builder
+flatpak install flathub org.freedesktop.Platform//24.08 org.freedesktop.Sdk//24.08 org.freedesktop.Sdk.Extension.node20//24.08 org.freedesktop.Sdk.Extension.rust-stable//24.08
+flatpak-builder --user --install --force-clean build-dir net.pedropaulo.OzemPDF.yml
+```
+
+Notes:
+
+- The Flatpak manifest bundles Ghostscript, so no separate `gs` installation is needed
+- Flathub publication is planned but not live yet
+
 ## Tech Stack
 
 - Tauri

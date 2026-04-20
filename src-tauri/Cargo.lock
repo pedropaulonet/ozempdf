@@ -2115,6 +2115,7 @@ dependencies = [
 name = "ozempdf"
 version = "0.1.0-beta.2"
 dependencies = [
+ "open",
  "serde",
  "serde_json",
  "tauri",

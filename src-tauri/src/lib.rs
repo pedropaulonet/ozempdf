@@ -50,30 +50,7 @@ fn open_external_link(url: String) -> Result<(), String> {
         return Err("error.invalid_external_link".to_string());
     }
 
-    #[cfg(target_os = "linux")]
-    let mut command = {
-        let mut command = Command::new("xdg-open");
-        command.arg(&url);
-        command
-    };
-
-    #[cfg(target_os = "macos")]
-    let mut command = {
-        let mut command = Command::new("open");
-        command.arg(&url);
-        command
-    };
-
-    #[cfg(target_os = "windows")]
-    let mut command = {
-        let mut command = Command::new("cmd");
-        command.args(["/C", "start", "", &url]);
-        command
-    };
-
-    command
-        .spawn()
-        .map_err(|_| "error.open_link_failed".to_string())?;
+    open::that(&url).map_err(|_| "error.open_link_failed".to_string())?;
 
     Ok(())
 }
@@ -284,7 +261,7 @@ pub fn run() {
             open_external_link
         ])
         .run(tauri::generate_context!())
-        .expect("erro ao executar aplicativo tauri");
+        .expect("failed to run tauri application");
 }
 
 #[cfg(test)]
