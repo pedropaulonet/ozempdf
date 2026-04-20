@@ -6,7 +6,7 @@ It is built with Tauri for a lightweight desktop footprint while keeping Ghostsc
 
 Ghostscript is currently a required system dependency: OzemPDF expects the `gs` command to be installed and available in `PATH`.
 
-![OzemPDF logo](./imagens/ozemPDF.svg)
+![OzemPDF logo](./images/ozemPDF.svg)
 
 ## Supported Platforms
 

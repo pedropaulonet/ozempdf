@@ -34,7 +34,7 @@ download_tool() {
 # 1. Preparar ícones
 mkdir -p "$ROOT_DIR/src-tauri/icons"
 if has_command convert; then
-  convert "$ROOT_DIR/imagens/ozemPDF.png" -resize 512x512 "$ROOT_DIR/src-tauri/icons/OzemPDF.png"
+  convert "$ROOT_DIR/images/ozemPDF.png" -resize 512x512 "$ROOT_DIR/src-tauri/icons/OzemPDF.png"
 elif [[ -f "$ROOT_DIR/src-tauri/icons/OzemPDF.png" ]]; then
   printf 'Aviso: "convert" não encontrado. Reutilizando ícone existente em src-tauri/icons/OzemPDF.png.\n'
 else

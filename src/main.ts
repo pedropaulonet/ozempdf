@@ -43,7 +43,7 @@ let selectedFiles: string[] = [];
 let outputDirectory = readStoredOutput();
 let ghostscriptReady = false;
 let ghostscriptVersion: string | null = null;
-const logoUrl = new URL("../imagens/ozemPDF.svg", import.meta.url).href;
+const logoUrl = new URL("../images/ozemPDF.svg", import.meta.url).href;
 
 const ui = new UIManager("#app", logoUrl);
 const compressor = new PDFCompressor();
