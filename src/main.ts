@@ -1,135 +1,51 @@
 import "./styles.css";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { open } from "@tauri-apps/plugin-dialog";
-import {
-  translations,
-  type Translation,
-  type Locale,
-  type ThemeMode,
-  type CompressionLevel,
-  type LocaleOption
-} from "./translations";
 import { UIManager } from "./ui";
 import { APP_LICENSE, CURATED_DEPENDENCIES, OFFICIAL_LINKS } from "./about";
-import { 
-  PDFCompressor, 
-  type CompressionResponse, 
-  type CompressionFailure 
+import {
+  PDFCompressor,
+  type CompressionResponse,
+  type CompressionFailure
 } from "./compressor";
+import {
+  APP_VERSION,
+  themeStorageKey,
+  localeStorageKey,
+  levelStorageKey,
+  outputStorageKey,
+  mediaQuery,
+  sortedLocaleOptions,
+  currentTheme,
+  currentLocale,
+  currentLevel,
+  selectedFiles,
+  outputDirectory,
+  ghostscriptReady,
+  ghostscriptVersion,
+  setCurrentTheme,
+  setCurrentLocale,
+  setCurrentLevel,
+  setSelectedFiles,
+  setOutputDirectory,
+  setGhostscriptReady,
+  setGhostscriptVersion,
+  t,
+  translateError,
+  applyTheme
+} from "./state";
+import {
+  baseName,
+  escapeHtml,
+  formatBytes,
+  makeOutputPath
+} from "./utils";
+import type { ThemeMode, Locale, CompressionLevel } from "./translations";
 
-declare const __APP_VERSION__: string;
-
-const themeStorageKey = "ozempdf-theme";
-const localeStorageKey = "ozempdf-locale";
-const levelStorageKey = "ozempdf-level";
-const outputStorageKey = "ozempdf-output";
-const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-const localeOptions = [
-  { value: "pt-BR", label: "Português" },
-  { value: "en", label: "English" },
-  { value: "es", label: "Español" },
-  { value: "fr", label: "Français" },
-  { value: "de", label: "Deutsch" },
-  { value: "it", label: "Italiano" }
-] satisfies LocaleOption[];
-const sortedLocaleOptions: LocaleOption[] = [...localeOptions].sort((left, right) =>
-  left.label.localeCompare(right.label, "und")
-);
-
-let currentTheme = readStoredTheme();
-let currentLocale = readStoredLocale();
-let currentLevel = readStoredLevel();
-let selectedFiles: string[] = [];
-let outputDirectory = readStoredOutput();
-let ghostscriptReady = false;
-let ghostscriptVersion: string | null = null;
 const logoUrl = new URL("../images/ozemPDF.svg", import.meta.url).href;
 
 const ui = new UIManager("#app", logoUrl);
 const compressor = new PDFCompressor();
-
-function readStoredTheme(): ThemeMode {
-  const stored = localStorage.getItem(themeStorageKey);
-  return stored === "light" || stored === "dark" || stored === "system"
-    ? stored
-    : "system";
-}
-
-function readStoredLocale(): Locale {
-  const stored = localStorage.getItem(localeStorageKey);
-  if (stored && stored in translations) {
-    return stored as Locale;
-  }
-
-  const preferred = [...navigator.languages, navigator.language]
-    .filter(Boolean)
-    .map(normalizeLocale)
-    .find((locale): locale is Locale => locale in translations);
-
-  return preferred ?? "en";
-}
-
-function readStoredLevel(): CompressionLevel {
-  const stored = localStorage.getItem(levelStorageKey);
-  return stored === "max" || stored === "high" || stored === "medium" || stored === "low"
-    ? stored
-    : "high";
-}
-
-function readStoredOutput(): string {
-  return localStorage.getItem(outputStorageKey) ?? "";
-}
-
-function t(): Translation {
-  return translations[currentLocale];
-}
-
-function translateError(raw: string): string {
-  const [key, ...rest] = raw.split("|");
-  const translated = t().errors[key];
-  const details = rest.join("|");
-
-  if (translated && details) {
-    return `${translated} ${details}`;
-  }
-
-  return translated ?? raw;
-}
-
-function normalizeLocale(locale: string): Locale | "en" {
-  const lower = locale.toLowerCase();
-
-  if (lower.startsWith("pt")) {
-    return "pt-BR";
-  }
-
-  if (lower.startsWith("es")) {
-    return "es";
-  }
-
-  if (lower.startsWith("fr")) {
-    return "fr";
-  }
-
-  if (lower.startsWith("de")) {
-    return "de";
-  }
-
-  if (lower.startsWith("it")) {
-    return "it";
-  }
-
-  return "en";
-}
-
-function escapeHtml(value: string) {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
 
 function setStatus(message: string, tone: "info" | "error" | "success" | "warning") {
   ui.setStatus(message, tone);
@@ -137,43 +53,6 @@ function setStatus(message: string, tone: "info" | "error" | "success" | "warnin
 
 function setBusy(nextBusy: boolean) {
   ui.setBusy(nextBusy, t(), ghostscriptReady);
-}
-
-function applyTheme() {
-  const resolved = currentTheme === "system"
-    ? (mediaQuery.matches ? "dark" : "light")
-    : currentTheme;
-
-  document.documentElement.dataset.theme = resolved;
-  document.documentElement.style.colorScheme = resolved;
-}
-
-function formatBytes(bytes: number) {
-  const units = ["B", "KB", "MB", "GB"];
-  let value = bytes;
-  let unitIndex = 0;
-
-  while (value >= 1024 && unitIndex < units.length - 1) {
-    value /= 1024;
-    unitIndex += 1;
-  }
-
-  return `${value.toFixed(value >= 10 || unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
-}
-
-function baseName(path: string) {
-  const segments = path.split(/[/\\]/);
-  return segments[segments.length - 1] || path;
-}
-
-function joinPath(directory: string, filename: string) {
-  const separator = directory.includes("\\") ? "\\" : "/";
-  return `${directory}${directory.endsWith(separator) ? "" : separator}${filename}`;
-}
-
-function makeOutputPath(inputPath: string) {
-  const filename = baseName(inputPath).replace(/\.pdf$/i, "-compressed.pdf");
-  return joinPath(outputDirectory, filename);
 }
 
 function getSelectedLevel(): CompressionLevel {
@@ -193,7 +72,7 @@ function renderFileList() {
     selectedFiles,
     t(),
     () => {
-      selectedFiles = [];
+      setSelectedFiles([]);
       renderFileList();
       setStatus(t().ready, "info");
       ui.hideResult();
@@ -216,7 +95,7 @@ function updateProgress(current: number, total: number, currentFile = "") {
 function renderStaticText() {
   ui.renderStaticText(
     t(),
-    __APP_VERSION__,
+    APP_VERSION,
     currentTheme,
     currentLocale,
     sortedLocaleOptions,
@@ -244,8 +123,8 @@ async function openExternalLink(url: string) {
 async function syncSystemStatus() {
   try {
     const systemStatus = await compressor.getSystemStatus();
-    ghostscriptReady = systemStatus.ghostscriptAvailable;
-    ghostscriptVersion = systemStatus.ghostscriptVersion ?? null;
+    setGhostscriptReady(systemStatus.ghostscriptAvailable);
+    setGhostscriptVersion(systemStatus.ghostscriptVersion ?? null);
     ui.getCompressButton().disabled = compressor.isBusy() || !ghostscriptReady;
     ui.setAboutGhostscriptValue(ghostscriptVersion, t().aboutUnavailable);
 
@@ -256,8 +135,8 @@ async function syncSystemStatus() {
       setStatus(`${t().ghostscriptMissing}${details}`, "warning");
     }
   } catch (error) {
-    ghostscriptReady = false;
-    ghostscriptVersion = null;
+    setGhostscriptReady(false);
+    setGhostscriptVersion(null);
     ui.getCompressButton().disabled = true;
     ui.setAboutGhostscriptValue(ghostscriptVersion, t().aboutUnavailable);
     const message = error instanceof Error ? error.message : String(error);
@@ -291,7 +170,7 @@ ui.getSelectInputButton().addEventListener("click", async () => {
     return;
   }
 
-  selectedFiles = Array.isArray(selected) ? selected : [selected];
+  setSelectedFiles(Array.isArray(selected) ? selected : [selected]);
   renderFileList();
   ui.hideResult();
   setStatus(t().filesSelected, "info");
@@ -309,7 +188,7 @@ ui.getSelectOutputButton().addEventListener("click", async () => {
     return;
   }
 
-  outputDirectory = selected;
+  setOutputDirectory(selected);
   localStorage.setItem(outputStorageKey, outputDirectory);
   renderOutputFolder();
   setStatus(t().folderSelected, "info");
@@ -321,7 +200,7 @@ ui.getLevelOptionsEl().addEventListener("change", (event) => {
     return;
   }
 
-  currentLevel = target.value as CompressionLevel;
+  setCurrentLevel(target.value as CompressionLevel);
   localStorage.setItem(levelStorageKey, currentLevel);
 });
 
@@ -357,7 +236,6 @@ ui.getCompressButton().addEventListener("click", async () => {
   try {
     const { results, failures } = await compressor.compressBatch(
       selectedFiles,
-      outputDirectory,
       level,
       (index, currentFile) => {
         updateProgress(index, selectedFiles.length, currentFile);
@@ -369,7 +247,7 @@ ui.getCompressButton().addEventListener("click", async () => {
         }
       },
       baseName,
-      makeOutputPath
+      (inputPath: string) => makeOutputPath(inputPath, outputDirectory)
     );
 
     const translatedFailures = failures.map(f => ({
@@ -403,13 +281,13 @@ ui.getCompressButton().addEventListener("click", async () => {
 });
 
 ui.getThemeSelect().addEventListener("change", () => {
-  currentTheme = ui.getThemeSelect().value as ThemeMode;
+  setCurrentTheme(ui.getThemeSelect().value as ThemeMode);
   localStorage.setItem(themeStorageKey, currentTheme);
   applyTheme();
 });
 
 ui.getLocaleSelect().addEventListener("change", () => {
-  currentLocale = ui.getLocaleSelect().value as Locale;
+  setCurrentLocale(ui.getLocaleSelect().value as Locale);
   localStorage.setItem(localeStorageKey, currentLocale);
   renderStaticText();
 

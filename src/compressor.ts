@@ -62,7 +62,6 @@ export class PDFCompressor {
 
   public async compressBatch(
     files: string[],
-    _outputDirectory: string,
     level: CompressionLevel,
     onProgress: (index: number, currentFile: string) => void,
     baseName: (path: string) => string,
