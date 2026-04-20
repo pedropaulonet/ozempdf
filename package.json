@@ -11,6 +11,8 @@
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
     "tauri:appimage": "bash ./scripts/build-appimage.sh",
+    "tauri:deb": "bash ./scripts/build-deb.sh",
+    "tauri:flatpak": "bash ./scripts/build-flatpak.sh",
     "test": "vitest run"
   },
   "dependencies": {

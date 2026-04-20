@@ -12,7 +12,7 @@ mkdir -p "$TOOLS_DIR"
 
 require_command() {
   if ! command -v "$1" >/dev/null 2>&1; then
-    printf 'Erro: Comando "%s" não encontrado.\n' "$1" >&2
+    printf 'Error: command "%s" not found.\n' "$1" >&2
     exit 1
   fi
 }
@@ -25,53 +25,50 @@ download_tool() {
   local url="$1"
   local output="$2"
   if [[ ! -f "$output" ]]; then
-    printf 'Baixando %s...\n' "$(basename "$output")"
+    printf 'Downloading %s...\n' "$(basename "$output")"
     curl -L "$url" -o "$output"
     chmod +x "$output"
   fi
 }
 
-# 1. Preparar ícones
+# 1. Prepare icons
 mkdir -p "$ROOT_DIR/src-tauri/icons"
 if has_command convert; then
   convert "$ROOT_DIR/images/ozemPDF.png" -resize 512x512 "$ROOT_DIR/src-tauri/icons/OzemPDF.png"
 elif [[ -f "$ROOT_DIR/src-tauri/icons/OzemPDF.png" ]]; then
-  printf 'Aviso: "convert" não encontrado. Reutilizando ícone existente em src-tauri/icons/OzemPDF.png.\n'
+  printf 'Warning: "convert" not found. Reusing existing icon at src-tauri/icons/OzemPDF.png.\n'
 else
-  printf 'Erro: Comando "convert" não encontrado e nenhum ícone pré-gerado disponível em src-tauri/icons/OzemPDF.png.\n' >&2
+  printf 'Error: "convert" not found and no pre-generated icon available at src-tauri/icons/OzemPDF.png.\n' >&2
   exit 1
 fi
 
-# 2. Compilar binário
+# 2. Build binary
 require_command node
 require_command npm
 npm run build
 npx tauri build --no-bundle
 
-# 3. Preparar ferramentas de deploy
+# 3. Prepare deploy tools
 download_tool "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage" "$TOOLS_DIR/linuxdeploy"
 download_tool "https://raw.githubusercontent.com/linuxdeploy/linuxdeploy-plugin-gtk/master/linuxdeploy-plugin-gtk.sh" "$TOOLS_DIR/linuxdeploy-plugin-gtk"
 
-# 4. Configurar AppDir e Deploy
+# 4. Set up AppDir and deploy
 APPDIR="$ROOT_DIR/src-tauri/target/release/bundle/appimage/OzemPDF.AppDir"
 export OUTPUT="$APPIMAGE_PATH"
 export LD_LIBRARY_PATH="$ROOT_DIR/src-tauri/target/release"
-export PATH="$TOOLS_DIR:$PATH" # Para o linuxdeploy encontrar o plugin gtk
+export PATH="$TOOLS_DIR:$PATH"
 
-printf 'Iniciando o empacotamento com linuxdeploy...\n'
+printf 'Starting AppImage packaging with linuxdeploy...\n'
 
 rm -rf "$APPDIR"
 mkdir -p "$APPDIR"
 mkdir -p "$(dirname "$APPIMAGE_PATH")"
 
-# Copia metadados AppStream manualmente (importante para lojas de apps e Linux moderno)
+# Copy AppStream metadata manually (important for app stores and modern Linux)
 mkdir -p "$APPDIR/usr/share/metainfo"
 cp "$ROOT_DIR/src-tauri/linux/net.pedropaulo.OzemPDF.metainfo.xml" "$APPDIR/usr/share/metainfo/${APP_ID}.metainfo.xml"
 
-# Executa o linuxdeploy
-# --appdir: pasta onde a estrutura do app é montada
-# --plugin gtk: garante que as libs de interface e temas sejam incluídas
-# --icon-filename: garante que o ícone tenha o nome esperado pelo .desktop
+# Run linuxdeploy
 ARCH=x86_64 "$TOOLS_DIR/linuxdeploy" --appimage-extract-and-run \
   --appdir "$APPDIR" \
   --executable "$BINARY_PATH" \
@@ -82,7 +79,7 @@ ARCH=x86_64 "$TOOLS_DIR/linuxdeploy" --appimage-extract-and-run \
   --output appimage
 
 printf '\n%s\n' "--------------------------------------------------------"
-printf 'AppImage portátil pronto em: %s\n' "$APPIMAGE_PATH"
-printf 'As bibliotecas (WebKit, GTK) agora estão dentro do arquivo.\n'
-printf 'Nota: O Ghostscript ainda é necessário no sistema de destino.\n'
+printf 'AppImage ready at: %s\n' "$APPIMAGE_PATH"
+printf 'WebKit and GTK libraries are bundled inside.\n'
+printf 'Note: Ghostscript must still be installed on the target system.\n'
 printf '%s\n' "--------------------------------------------------------"
