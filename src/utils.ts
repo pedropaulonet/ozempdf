@@ -34,3 +34,15 @@ export function makeOutputPath(inputPath: string, outputDirectory: string) {
   const filename = baseName(inputPath).replace(/\.pdf$/i, "-compressed.pdf");
   return joinPath(outputDirectory, filename);
 }
+
+export function normalizeLocale(locale: string): string {
+  const lower = locale.toLowerCase();
+
+  if (lower.startsWith("pt")) return "pt-BR";
+  if (lower.startsWith("es")) return "es";
+  if (lower.startsWith("fr")) return "fr";
+  if (lower.startsWith("de")) return "de";
+  if (lower.startsWith("it")) return "it";
+
+  return "en";
+}

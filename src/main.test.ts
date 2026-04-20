@@ -166,6 +166,7 @@ describe("About dialog", () => {
     expect(dependencyCopy).toContain("PDF engine");
     expect(dependencyCopy).toContain("QA/build");
     expect(dependencyCopy).toContain("desktop runtime and native window shell");
+    expect(dependencyCopy).toContain("cross-platform URL and file opener");
     expect(dependencyCopy).toContain("PDF compression engine used for output generation");
     expect(dependencyCopy).toContain("test runner covering UI behavior and regressions");
   });
@@ -286,5 +287,47 @@ describe("About dialog", () => {
         about: "Informazioni"
       }
     });
+  });
+
+  it("renders compression level options for the current locale", () => {
+    const ui = renderAboutDialog("en");
+    ui.renderLevelOptions(translations.en, "high");
+
+    const levels = document.querySelectorAll<HTMLInputElement>(
+      'input[name="compression-level"]'
+    );
+
+    expect(levels).toHaveLength(4);
+
+    const values = Array.from(levels).map((input) => input.value);
+    expect(values).toContain("max");
+    expect(values).toContain("high");
+    expect(values).toContain("medium");
+    expect(values).toContain("low");
+  });
+
+  it("renders the high level as checked by default when no stored preference exists", () => {
+    const ui = renderAboutDialog("en");
+    ui.renderLevelOptions(translations.en, "high");
+
+    const checked = document.querySelector<HTMLInputElement>(
+      'input[name="compression-level"]:checked'
+    );
+
+    expect(checked).not.toBeNull();
+    expect(checked?.value).toBe("high");
+  });
+
+  it("renders level labels from the current locale", () => {
+    const ui = renderAboutDialog("pt-BR");
+    ui.renderLevelOptions(translations["pt-BR"], "high");
+
+    const labels = document.querySelectorAll(".level-copy strong");
+    const labelTexts = Array.from(labels).map((el) => el.textContent);
+
+    expect(labelTexts).toContain("Máxima");
+    expect(labelTexts).toContain("Alta");
+    expect(labelTexts).toContain("Equilibrada");
+    expect(labelTexts).toContain("Qualidade");
   });
 });

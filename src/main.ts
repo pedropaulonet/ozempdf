@@ -9,7 +9,6 @@ import {
   type CompressionFailure
 } from "./compressor";
 import {
-  APP_VERSION,
   themeStorageKey,
   localeStorageKey,
   levelStorageKey,
@@ -41,6 +40,9 @@ import {
   makeOutputPath
 } from "./utils";
 import type { ThemeMode, Locale, CompressionLevel } from "./translations";
+
+declare const __APP_VERSION__: string;
+const APP_VERSION = __APP_VERSION__;
 
 const logoUrl = new URL("../images/ozemPDF.svg", import.meta.url).href;
 

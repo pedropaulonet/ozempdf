@@ -6,10 +6,7 @@ import {
   type CompressionLevel,
   type LocaleOption
 } from "./translations";
-
-declare const __APP_VERSION__: string;
-
-export const APP_VERSION = __APP_VERSION__;
+import { normalizeLocale } from "./utils";
 
 export const themeStorageKey = "ozempdf-theme";
 export const localeStorageKey = "ozempdf-locale";
@@ -93,18 +90,6 @@ export function translateError(raw: string): string {
   }
 
   return translated ?? raw;
-}
-
-export function normalizeLocale(locale: string): Locale | "en" {
-  const lower = locale.toLowerCase();
-
-  if (lower.startsWith("pt")) return "pt-BR";
-  if (lower.startsWith("es")) return "es";
-  if (lower.startsWith("fr")) return "fr";
-  if (lower.startsWith("de")) return "de";
-  if (lower.startsWith("it")) return "it";
-
-  return "en";
 }
 
 export function applyTheme() {

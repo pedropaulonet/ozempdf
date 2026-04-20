@@ -44,9 +44,9 @@ export const CURATED_DEPENDENCIES: CuratedDependencyGroup[] = [
         role: "native file and folder pickers for PDF workflows"
       },
       {
-        name: "@tauri-apps/plugin-shell",
-        href: "https://v2.tauri.app/plugin/shell/",
-        role: "safe external link and shell integration support"
+        name: "open",
+        href: "https://github.com/Byron/open-rs",
+        role: "cross-platform URL and file opener"
       }
     ]
   },
