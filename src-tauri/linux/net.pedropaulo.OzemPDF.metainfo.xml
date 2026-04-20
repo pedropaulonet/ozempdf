@@ -2,8 +2,8 @@
 <component type="desktop-application">
   <id>net.pedropaulo.OzemPDF</id>
   <name>OzemPDF</name>
-  <summary>Compacte arquivos PDF com presets praticos e em lote</summary>
-  <summary xml:lang="en">Compress PDF files with practical presets and batch tools</summary>
+  <summary>Compress PDF files with practical presets and batch tools</summary>
+  <summary xml:lang="pt_BR">Compacte arquivos PDF com presets praticos e em lote</summary>
   <summary xml:lang="es">Comprime archivos PDF con ajustes practicos y en lote</summary>
   <summary xml:lang="fr">Compressez des PDF avec des reglages pratiques et en lot</summary>
   <summary xml:lang="de">PDF-Dateien mit praktischen Vorgaben und Stapelverarbeitung komprimieren</summary>
@@ -15,10 +15,10 @@
   </developer>
   <launchable type="desktop-id">net.pedropaulo.OzemPDF.desktop</launchable>
   <description>
-    <p>OzemPDF e um aplicativo desktop para comprimir um ou varios arquivos PDF com presets praticos, dialogos nativos e fluxo em lote.</p>
-    <p>O projeto e distribuido sob a licenca MIT.</p>
-    <p xml:lang="en">OzemPDF is a desktop app for compressing one or many PDF files with practical presets, native file dialogs, and a straightforward batch workflow.</p>
-    <p xml:lang="en">The project is distributed under the MIT license.</p>
+    <p>OzemPDF is a desktop app for compressing one or many PDF files with practical presets, native file dialogs, and a straightforward batch workflow.</p>
+    <p>The project is distributed under the MIT license.</p>
+    <p xml:lang="pt_BR">OzemPDF e um aplicativo desktop para comprimir um ou varios arquivos PDF com presets praticos, dialogos nativos e fluxo em lote.</p>
+    <p xml:lang="pt_BR">O projeto e distribuido sob a licenca MIT.</p>
     <p xml:lang="es">OzemPDF es una aplicacion de escritorio para comprimir uno o varios archivos PDF con ajustes practicos, dialogos nativos y un flujo por lotes sencillo.</p>
     <p xml:lang="es">El proyecto se distribuye bajo la licencia MIT.</p>
     <p xml:lang="fr">OzemPDF est une application de bureau pour compresser un ou plusieurs fichiers PDF avec des reglages pratiques, des dialogues natifs et un traitement par lot simple.</p>
@@ -32,8 +32,8 @@
   <url type="donation">https://ko-fi.com/pedropaulo</url>
   <screenshots>
     <screenshot type="default">
-      <caption>Fluxo de compactacao em lote no OzemPDF</caption>
-      <caption xml:lang="en">Batch compression workflow in OzemPDF</caption>
+      <caption>Batch compression workflow in OzemPDF</caption>
+      <caption xml:lang="pt_BR">Fluxo de compactacao em lote no OzemPDF</caption>
       <image>https://dev.pedropaulo.net/ozempdf/assets/Screenshot.png</image>
     </screenshot>
   </screenshots>
