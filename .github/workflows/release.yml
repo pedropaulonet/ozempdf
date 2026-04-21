@@ -74,7 +74,7 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Download Ghostscript for Windows
+- name: Download Ghostscript for Windows
         shell: pwsh
         run: |
           curl.exe -L "https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10051/gs10051w64.exe" -o C:\ghostscript-setup.exe
@@ -96,7 +96,9 @@ jobs:
           if (-not $json.bundle.PSObject.Properties["resources"]) {
             $json.bundle | Add-Member -MemberType NoteProperty -Name "resources" -Value @() -Force
           }
-          $json.bundle.resources += @("gs-win/*")
+          if (-not ($json.bundle.resources -contains "gs-win/*")) {
+            $json.bundle.resources += @("gs-win/*")
+          }
           $json | ConvertTo-Json -Depth 10 | Set-Content src-tauri/tauri.conf.json
 
       - name: Cache Cargo
@@ -109,6 +111,7 @@ jobs:
           key: release-windows-${{ runner.os }}-${{ hashFiles('src-tauri/Cargo.lock') }}
 
       - name: Build Windows installer
+        shell: pwsh
         run: npx tauri build --bundles msi
 
       - name: Upload Windows release assets
