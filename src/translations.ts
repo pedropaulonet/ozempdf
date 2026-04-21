@@ -128,7 +128,7 @@ export const translations: Record<Locale, Translation> = {
     failedBatch: "Falha durante a compactação.",
     failedFiles: "Arquivos com falha",
     partialFinished: "Compactação concluída com falhas parciais.",
-    ghostscriptMissing: "Ghostscript não está disponível. Instale o comando gs para compactar PDFs.",
+    ghostscriptMissing: "Ghostscript não está disponível. Reinstale o OzemPDF ou instale o Ghostscript manualmente.",
     selectedCount: (count) => `${count} arquivo${count === 1 ? "" : "s"} selecionado${count === 1 ? "" : "s"}`,
     levelOptions: {
       max: {
@@ -223,7 +223,7 @@ export const translations: Record<Locale, Translation> = {
     failedBatch: "Compression failed.",
     failedFiles: "Failed files",
     partialFinished: "Compression finished with partial failures.",
-    ghostscriptMissing: "Ghostscript is not available. Install the gs command to compress PDFs.",
+    ghostscriptMissing: "Ghostscript is not available. Reinstall OzemPDF or install Ghostscript manually.",
     selectedCount: (count) => `${count} file${count === 1 ? "" : "s"} selected`,
     levelOptions: {
       max: {
@@ -318,7 +318,7 @@ export const translations: Record<Locale, Translation> = {
     failedBatch: "La compresión falló.",
     failedFiles: "Archivos con error",
     partialFinished: "La compresión terminó con fallos parciales.",
-    ghostscriptMissing: "Ghostscript no está disponible. Instala el comando gs para comprimir PDF.",
+    ghostscriptMissing: "Ghostscript no está disponible. Reinstala OzemPDF o instala Ghostscript manualmente.",
     selectedCount: (count) => `${count} archivo${count === 1 ? "" : "s"} seleccionado${count === 1 ? "" : "s"}`,
     levelOptions: {
       max: {
@@ -413,7 +413,7 @@ export const translations: Record<Locale, Translation> = {
     failedBatch: "La compression a échoué.",
     failedFiles: "Fichiers en échec",
     partialFinished: "Compression terminée avec des échecs partiels.",
-    ghostscriptMissing: "Ghostscript est indisponible. Installez la commande gs pour compresser les PDF.",
+    ghostscriptMissing: "Ghostscript est indisponible. Réinstallez OzemPDF ou installez Ghostscript manuellement.",
     selectedCount: (count) => `${count} fichier${count === 1 ? "" : "s"} sélectionné${count === 1 ? "" : "s"}`,
     levelOptions: {
       max: {
@@ -508,7 +508,7 @@ export const translations: Record<Locale, Translation> = {
     failedBatch: "Komprimierung fehlgeschlagen.",
     failedFiles: "Fehlgeschlagene Dateien",
     partialFinished: "Komprimierung mit teilweisen Fehlern abgeschlossen.",
-    ghostscriptMissing: "Ghostscript ist nicht verfügbar. Installieren Sie den Befehl gs, um PDFs zu komprimieren.",
+    ghostscriptMissing: "Ghostscript ist nicht verfügbar. Installieren Sie OzemPDF neu oder installieren Sie Ghostscript manuell.",
     selectedCount: (count) => `${count} Datei${count === 1 ? "" : "en"} ausgewählt`,
     levelOptions: {
       max: {
@@ -603,7 +603,7 @@ export const translations: Record<Locale, Translation> = {
     failedBatch: "La compressione non è riuscita.",
     failedFiles: "File non riusciti",
     partialFinished: "Compressione completata con errori parziali.",
-    ghostscriptMissing: "Ghostscript non è disponível. Installa il comando gs per comprimere i PDF.",
+    ghostscriptMissing: "Ghostscript non è disponibile. Reinstalla OzemPDF o installa Ghostscript manualmente.",
     selectedCount: (count) => `${count} file selezionat${count === 1 ? "o" : "i"}`,
     levelOptions: {
       max: {

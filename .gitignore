@@ -19,3 +19,4 @@ build-dir/
 devlog/
 AGENTS.md
 WORKLOG-*.md
+src-tauri/gs-win/

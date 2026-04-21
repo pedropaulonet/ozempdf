@@ -1,6 +1,6 @@
 [package]
 name = "ozempdf"
-version = "0.1.0-beta.2"
+version = "0.1.0-beta.3"
 description = "Desktop app for compressing PDF files with practical presets and batch processing"
 authors = ["Pedro"]
 edition = "2021"

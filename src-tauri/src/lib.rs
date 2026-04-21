@@ -41,6 +41,26 @@ struct SystemStatus {
     ghostscript_error: Option<String>,
 }
 
+fn ghostscript_command() -> String {
+    #[cfg(target_os = "windows")]
+    {
+        let exe_dir = std::env::current_exe()
+            .ok()
+            .and_then(|p| p.parent().map(|d| d.join("gs-win").join("gswin64c.exe")));
+        if let Some(path) = exe_dir {
+            if path.exists() {
+                return path.display().to_string();
+            }
+        }
+        "gswin64c.exe".to_string()
+    }
+
+    #[cfg(not(target_os = "windows"))]
+    {
+        "gs".to_string()
+    }
+}
+
 #[tauri::command]
 fn open_external_link(url: String) -> Result<(), String> {
     let is_web = url.starts_with("https://") || url.starts_with("http://");
@@ -89,7 +109,8 @@ fn compress_pdf(request: CompressionRequest) -> Result<CompressionResponse, Stri
 
     fs::create_dir_all(parent).map_err(|_| "error.create_output_dir_failed".to_string())?;
 
-    let gs_output = Command::new("gs")
+    let gs_cmd = ghostscript_command();
+    let gs_output = Command::new(&gs_cmd)
         .arg("-sDEVICE=pdfwrite")
         .arg("-dCompatibilityLevel=1.4")
         .arg("-dNOPAUSE")
@@ -104,7 +125,13 @@ fn compress_pdf(request: CompressionRequest) -> Result<CompressionResponse, Stri
         .arg(format!("-sOutputFile={}", output.display()))
         .arg(input.as_os_str())
         .output()
-        .map_err(|_| "error.gs_execution_failed".to_string())?;
+        .map_err(|e| {
+            if cfg!(target_os = "windows") {
+                format!("error.gs_execution_failed|{}", e)
+            } else {
+                "error.gs_execution_failed".to_string()
+            }
+        })?;
 
     if !gs_output.status.success() {
         let stderr = String::from_utf8_lossy(&gs_output.stderr);
@@ -176,7 +203,8 @@ fn validate_paths(input: &Path, output: &Path) -> Result<(), String> {
 }
 
 fn detect_ghostscript() -> Result<String, String> {
-    let output = Command::new("gs")
+    let gs_cmd = ghostscript_command();
+    let output = Command::new(&gs_cmd)
         .arg("--version")
         .output()
         .map_err(|_| "error.gs_unavailable".to_string())?;
@@ -377,5 +405,23 @@ mod tests {
             result.unwrap(),
             String::from_utf8_lossy(&expected.stdout).trim()
         );
+    }
+
+    #[test]
+    fn test_ghostscript_command_returns_expected() {
+        #[cfg(target_os = "windows")]
+        {
+            let cmd = ghostscript_command();
+            assert!(
+                cmd.ends_with("gswin64c.exe"),
+                "expected gswin64c.exe on windows, got: {}",
+                cmd
+            );
+        }
+
+        #[cfg(not(target_os = "windows"))]
+        {
+            assert_eq!(ghostscript_command(), "gs");
+        }
     }
 }
