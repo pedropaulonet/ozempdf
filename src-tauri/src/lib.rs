@@ -39,19 +39,13 @@ struct SystemStatus {
     ghostscript_available: bool,
     ghostscript_version: Option<String>,
     ghostscript_error: Option<String>,
+    #[cfg(target_os = "windows")]
+    ghostscript_installation_link: Option<String>,
 }
 
 fn ghostscript_command() -> String {
     #[cfg(target_os = "windows")]
     {
-        let exe_dir = std::env::current_exe()
-            .ok()
-            .and_then(|p| p.parent().map(|d| d.join("gs-win").join("bin").join("gswin64c.exe")));
-        if let Some(path) = exe_dir {
-            if path.exists() {
-                return path.display().to_string();
-            }
-        }
         "gswin64c.exe".to_string()
     }
 
@@ -82,11 +76,15 @@ fn get_system_status() -> SystemStatus {
             ghostscript_available: true,
             ghostscript_version: Some(version),
             ghostscript_error: None,
+            #[cfg(target_os = "windows")]
+            ghostscript_installation_link: None,
         },
         Err(error) => SystemStatus {
             ghostscript_available: false,
             ghostscript_version: None,
             ghostscript_error: Some(error),
+            #[cfg(target_os = "windows")]
+            ghostscript_installation_link: Some("https://www.ghostscript.com/releases/gsdnld.html".to_string()),
         },
     }
 }

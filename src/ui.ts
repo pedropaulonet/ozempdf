@@ -447,6 +447,7 @@ export class UIManager {
     appLicense: string,
     ghostscriptVersion: string | null,
     ghostscriptReady: boolean,
+    ghostscriptInstallationLink: string | null,
     busy: boolean
   ) {
     document.title = t.appName;
@@ -475,7 +476,27 @@ export class UIManager {
     this.aboutLicenseLabelEl.textContent = t.license;
     this.aboutLicenseValueEl.textContent = appLicense;
     this.aboutGsLabelEl.textContent = t.ghostscriptVersion;
-    this.aboutGsValueEl.textContent = ghostscriptVersion ?? t.aboutUnavailable;
+      this.aboutGsValueEl.textContent = ghostscriptVersion ?? t.aboutUnavailable;
+      
+      if (ghostscriptInstallationLink && !ghostscriptReady) {
+        // Add download link to about dialog when Ghostscript is missing
+        let downloadLink = this.aboutGsValueEl.querySelector('a');
+        if (!downloadLink) {
+          downloadLink = document.createElement('a');
+          downloadLink.href = ghostscriptInstallationLink;
+          downloadLink.textContent = t.ghostscriptMissingLink;
+          downloadLink.target = '_blank';
+          downloadLink.rel = 'noreferrer';
+          this.aboutGsValueEl.appendChild(document.createElement('br'));
+          this.aboutGsValueEl.appendChild(downloadLink);
+        }
+      } else {
+        // Remove download link if Ghostscript is available or we're on other platforms
+        const downloadLink = this.aboutGsValueEl.querySelector('a');
+        if (downloadLink) {
+          downloadLink.remove();
+        }
+      }
     this.aboutWebsiteLinkEl.textContent = t.website;
     this.aboutWebsiteLinkEl.href = officialLinks.website;
     this.aboutDonationLinkEl.textContent = t.donation;

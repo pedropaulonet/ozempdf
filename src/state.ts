@@ -35,6 +35,7 @@ export let selectedFiles: string[] = [];
 export let outputDirectory = readStoredOutput();
 export let ghostscriptReady = false;
 export let ghostscriptVersion: string | null = null;
+export let ghostscriptInstallationLink: string | null = null;
 
 export function setCurrentTheme(theme: ThemeMode) { currentTheme = theme; }
 export function setCurrentLocale(locale: Locale) { currentLocale = locale; }
@@ -43,6 +44,7 @@ export function setSelectedFiles(files: string[]) { selectedFiles = files; }
 export function setOutputDirectory(dir: string) { outputDirectory = dir; }
 export function setGhostscriptReady(ready: boolean) { ghostscriptReady = ready; }
 export function setGhostscriptVersion(version: string | null) { ghostscriptVersion = version; }
+export function setGhostscriptInstallationLink(link: string | null) { ghostscriptInstallationLink = link; }
 
 function readStoredTheme(): ThemeMode {
   const stored = localStorage.getItem(themeStorageKey);

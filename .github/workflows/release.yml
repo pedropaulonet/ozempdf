@@ -74,30 +74,6 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Download Ghostscript for Windows
-        shell: pwsh
-        run: |
-          Write-Host "Downloading Ghostscript ZIP..."
-          curl.exe -L "https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10051/ghostpdl-10.05.1.tar.gz" -o C:\ghostscript.zip
-          Write-Host "Extracting ZIP..."
-          & "C:\Program Files\7-Zip\7z.exe" x C:\ghostscript.zip -oC:\ghostscript-extracted -y
-          Write-Host "Copying gs-win files..."
-          New-Item -ItemType Directory -Path src-tauri\gs-win\bin -Force
-          New-Item -ItemType Directory -Path src-tauri\gs-win\lib -Force
-          New-Item -ItemType Directory -Path src-tauri\gs-win\Resource -Force
-          # Use uma versão conhecida que tenha a estrutura correta
-          Copy-Item C:\ghostscript-extracted\ghostpdl-10.05.1\bin\gswin64c.exe src-tauri\gs-win\bin\
-          Copy-Item C:\ghostscript-extracted\ghostpdl-10.05.1\bin\gsdll64.dll src-tauri\gs-win\bin\
-          Copy-Item -Recurse C:\ghostscript-extracted\ghostpdl-10.05.1\lib\* src-tauri\gs-win\lib\
-          Copy-Item -Recurse C:\ghostscript-extracted\ghostpdl-10.05.1\Resource\* src-tauri\gs-win\Resource\
-          Write-Host "Final gs-win structure:"
-          Get-ChildItem -Recurse src-tauri\gs-win
-          Remove-Item C:\ghostscript.zip -Force
-          Remove-Item C:\ghostscript-extracted -Recurse -Force
-
-      - name: Inject GS resources into tauri.conf.json
-        run: node -e "const f='src-tauri/tauri.conf.json'; const c=JSON.parse(require('fs').readFileSync(f,'utf8')); c.bundle.resources=['gs-win/*']; require('fs').writeFileSync(f,JSON.stringify(c,null,2));"
-
       - name: Cache Cargo
         uses: actions/cache@v4
         with:
