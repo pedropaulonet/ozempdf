@@ -78,6 +78,13 @@ jobs:
         shell: bash
         run: bash scripts/download-gs-win.sh
 
+      - name: Inject GS resources into tauri.conf.json
+        shell: bash
+        run: |
+          cd src-tauri
+          jq '.bundle.resources = ["gs-win/*"]' tauri.conf.json > tauri.conf.json.tmp
+          mv tauri.conf.json.tmp tauri.conf.json
+
       - name: Cache Cargo
         uses: actions/cache@v4
         with:
