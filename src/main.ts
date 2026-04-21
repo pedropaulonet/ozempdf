@@ -106,7 +106,6 @@ function renderStaticText() {
     APP_LICENSE,
     ghostscriptVersion,
     ghostscriptReady,
-    ghostscriptInstallationLink,
     compressor.isBusy()
   );
   renderLevelOptions();
@@ -128,7 +127,6 @@ async function syncSystemStatus() {
     const systemStatus = await compressor.getSystemStatus();
     setGhostscriptReady(systemStatus.ghostscriptAvailable);
     setGhostscriptVersion(systemStatus.ghostscriptVersion ?? null);
-    setGhostscriptInstallationLink((systemStatus as any).ghostscriptInstallationLink ?? null);
     ui.getCompressButton().disabled = compressor.isBusy() || !ghostscriptReady;
     ui.setAboutGhostscriptValue(ghostscriptVersion, t().aboutUnavailable);
 
@@ -141,7 +139,6 @@ async function syncSystemStatus() {
   } catch (error) {
     setGhostscriptReady(false);
     setGhostscriptVersion(null);
-    setGhostscriptInstallationLink(null);
     ui.getCompressButton().disabled = true;
     ui.setAboutGhostscriptValue(ghostscriptVersion, t().aboutUnavailable);
     const message = error instanceof Error ? error.message : String(error);

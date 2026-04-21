@@ -34,18 +34,6 @@
       "icons/icon.png",
       "icons/ozemPDF.svg"
     ],
-    "windows": {
-      "msi": {
-        "wix": {
-          "skipWebview": true
-        }
-      },
-      "nsis": {
-        "additionalArguments": [
-          "/DSHOW_GHOSTSCRIPT_INSTRUCTIONS=1"
-        ]
-      }
-    },
     "linux": {
       "deb": {
         "depends": ["ghostscript"]

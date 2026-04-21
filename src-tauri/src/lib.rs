@@ -39,8 +39,6 @@ struct SystemStatus {
     ghostscript_available: bool,
     ghostscript_version: Option<String>,
     ghostscript_error: Option<String>,
-    #[cfg(target_os = "windows")]
-    ghostscript_installation_link: Option<String>,
 }
 
 fn ghostscript_command() -> String {
@@ -76,15 +74,11 @@ fn get_system_status() -> SystemStatus {
             ghostscript_available: true,
             ghostscript_version: Some(version),
             ghostscript_error: None,
-            #[cfg(target_os = "windows")]
-            ghostscript_installation_link: None,
         },
         Err(error) => SystemStatus {
             ghostscript_available: false,
             ghostscript_version: None,
             ghostscript_error: Some(error),
-            #[cfg(target_os = "windows")]
-            ghostscript_installation_link: Some("https://www.ghostscript.com/releases/gsdnld.html".to_string()),
         },
     }
 }
