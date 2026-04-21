@@ -34,9 +34,6 @@
       "icons/icon.png",
       "icons/ozemPDF.svg"
     ],
-    "resources": [
-      "gs-win/*"
-    ],
     "linux": {
       "deb": {
         "depends": ["ghostscript"]

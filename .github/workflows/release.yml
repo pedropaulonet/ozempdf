@@ -90,16 +90,7 @@ jobs:
           Remove-Item C:\ghostscript-extracted -Recurse -Force
 
       - name: Inject GS resources into tauri.conf.json
-        shell: pwsh
-        run: |
-          $json = Get-Content src-tauri/tauri.conf.json | ConvertFrom-Json
-          if (-not $json.bundle.PSObject.Properties["resources"]) {
-            $json.bundle | Add-Member -MemberType NoteProperty -Name "resources" -Value @() -Force
-          }
-          if (-not ($json.bundle.resources -contains "gs-win/*")) {
-            $json.bundle.resources += @("gs-win/*")
-          }
-          $json | ConvertTo-Json -Depth 10 | Set-Content src-tauri/tauri.conf.json
+        run: node -e "const f='src-tauri/tauri.conf.json'; const c=JSON.parse(require('fs').readFileSync(f,'utf8')); c.bundle.resources=['gs-win/*']; require('fs').writeFileSync(f,JSON.stringify(c,null,2));"
 
       - name: Cache Cargo
         uses: actions/cache@v4
