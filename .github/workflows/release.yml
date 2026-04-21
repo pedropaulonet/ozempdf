@@ -93,7 +93,10 @@ jobs:
         shell: pwsh
         run: |
           $json = Get-Content src-tauri/tauri.conf.json | ConvertFrom-Json
-          $json.bundle.resources = @("gs-win/*")
+          if (-not $json.bundle.PSObject.Properties["resources"]) {
+            $json.bundle | Add-Member -MemberType NoteProperty -Name "resources" -Value @() -Force
+          }
+          $json.bundle.resources += @("gs-win/*")
           $json | ConvertTo-Json -Depth 10 | Set-Content src-tauri/tauri.conf.json
 
       - name: Cache Cargo
