@@ -75,14 +75,26 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Download Ghostscript for Windows
-        shell: bash
-        run: bash scripts/download-gs-win.sh
+        run: |
+          curl -L "https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10051/gs10051w64.exe" -o C:\\ghostscript-setup.exe --silent
+          "C:\\Program Files\\7-Zip\\7z.exe" x C:\\ghostscript-setup.exe -oC:\\ghostscript-extracted -y
+          mkdir src-tauri\\gs-win\\bin
+          mkdir src-tauri\\gs-win\\lib
+          mkdir src-tauri\\gs-win\\Resource
+          copy C:\\ghostscript-extracted\\bin\\gswin64c.exe src-tauri\\gs-win\\bin\\
+          copy C:\\ghostscript-extracted\\bin\\gsdll64.dll src-tauri\\gs-win\\bin\\
+          xcopy /s /y C:\\ghostscript-extracted\\lib\\* src-tauri\\gs-win\\lib\\
+          xcopy /s /y C:\\ghostscript-extracted\\Resource\\* src-tauri\\gs-win\\Resource\\
+          del C:\\ghostscript-setup.exe
+          rmdir /s /q C:\\ghostscript-extracted
+
+      - name: Install jq
+        run: choco install jq -y
 
       - name: Inject GS resources into tauri.conf.json
-        shell: bash
         run: |
           cd src-tauri
-          jq '.bundle.resources = ["gs-win/*"]' tauri.conf.json > tauri.conf.json.tmp
+          jq ".bundle.resources = [\"gs-win/*\"]" tauri.conf.json > tauri.conf.json.tmp
           mv tauri.conf.json.tmp tauri.conf.json
 
       - name: Cache Cargo

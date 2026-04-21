@@ -46,7 +46,7 @@ fn ghostscript_command() -> String {
     {
         let exe_dir = std::env::current_exe()
             .ok()
-            .and_then(|p| p.parent().map(|d| d.join("gs-win").join("gswin64c.exe")));
+            .and_then(|p| p.parent().map(|d| d.join("gs-win").join("bin").join("gswin64c.exe")));
         if let Some(path) = exe_dir {
             if path.exists() {
                 return path.display().to_string();
