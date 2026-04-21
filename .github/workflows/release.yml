@@ -74,7 +74,7 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
-- name: Download Ghostscript for Windows
+      - name: Download Ghostscript for Windows
         shell: pwsh
         run: |
           curl.exe -L "https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10051/gs10051w64.exe" -o C:\ghostscript-setup.exe
