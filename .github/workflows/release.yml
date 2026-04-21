@@ -79,21 +79,21 @@ jobs:
         run: |
           curl.exe -L "https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10051/gs10051w64.exe" -o C:\ghostscript-setup.exe
           & "C:\Program Files\7-Zip\7z.exe" x C:\ghostscript-setup.exe -oC:\ghostscript-extracted -y
-          Write-Host "=== Extracted contents ==="
-          Get-ChildItem -Recurse C:\ghostscript-extracted | Select-Object FullName
-          $gsRoot = Get-ChildItem -Directory -Path C:\ghostscript-extracted -Recurse -Filter "bin" | Where-Object { Test-Path (Join-Path $_.FullName "gswin64c.exe") } | Select-Object -First 1 | Split-Path -Parent
-          Write-Host "GS root found: $gsRoot"
+          Write-Host "=== Contents extracted ==="
+          Get-ChildItem C:\ghostscript-extracted
+          $gsRoot = Get-ChildItem -Directory C:\ghostscript-extracted | Select-Object -First 1
+          Write-Host "=== Using root directory: $gsRoot"
           New-Item -ItemType Directory -Path src-tauri\gs-win\bin -Force
           New-Item -ItemType Directory -Path src-tauri\gs-win\lib -Force
           New-Item -ItemType Directory -Path src-tauri\gs-win\Resource -Force
-          Copy-Item (Join-Path $gsRoot "bin\gswin64c.exe") src-tauri\gs-win\bin\
-          Copy-Item (Join-Path $gsRoot "bin\gsdll64.dll") src-tauri\gs-win\bin\
-          Copy-Item -Recurse (Join-Path $gsRoot "lib\*") src-tauri\gs-win\lib\
-          Copy-Item -Recurse (Join-Path $gsRoot "Resource\*") src-tauri\gs-win\Resource\
+          Copy-Item "$gsRoot\bin\gswin64c.exe" src-tauri\gs-win\bin\
+          Copy-Item "$gsRoot\bin\gsdll64.dll" src-tauri\gs-win\bin\
+          Copy-Item -Recurse "$gsRoot\lib\*" src-tauri\gs-win\lib\
+          Copy-Item -Recurse "$gsRoot\Resource\*" src-tauri\gs-win\Resource\
+          Write-Host "=== gs-win structure ==="
+          Get-ChildItem -Recurse src-tauri\gs-win
           Remove-Item C:\ghostscript-setup.exe -Force
           Remove-Item C:\ghostscript-extracted -Recurse -Force
-          Write-Host "=== gs-win contents ==="
-          Get-ChildItem -Recurse src-tauri\gs-win | Select-Object FullName
 
       - name: Inject GS resources into tauri.conf.json
         run: node -e "const f='src-tauri/tauri.conf.json'; const c=JSON.parse(require('fs').readFileSync(f,'utf8')); c.bundle.resources=['gs-win/*']; require('fs').writeFileSync(f,JSON.stringify(c,null,2));"
